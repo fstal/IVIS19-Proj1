@@ -7,18 +7,30 @@
 	</head>
 	<body>
 	
-	<div id="plot-div">
-
+	<div id="menuDiv" class="menu">
+		 <select id="selectMenu" onchange="selectOption()">
+		  <option value="infovisskill">Information Visualization</option>
+		  <option value="statskill">Statistics</option>
+		  <option value="mathskill">Mathematics</option>
+		  <option value="artskill" selected>Art</option>
+		  <option value="computerskill">Computers</option>
+		  <option value="programmingskill">Programming</option>
+		  <option value="compgraphicskill">Computer Graphics</option>
+		  <option value="hciskill">Human-Computer-Interaction</option>
+		  <option value="uxskill">User Experience Evaluation</option>
+		  <option value="communicationskill">Communications</option>
+		  <option value="collabskill">Collaboration</option>
+		  <option value="gitskill">Version Control</option>
+		</select> 
 		
-
 	</div>
 
 	<div id="individuals">
 		<h1 id='individuals-headline'>
 			Individuals
 		</h1>
+		
 		<div id="individuals-list-div">
-			
 
 		</div>
 	</div>
@@ -27,6 +39,9 @@
 		<h1 id='selected-individual-headline'>
 			Selected individual
 		</h1>
+		<div id= 'selected-individual'>
+
+		</div>
 	</div>
 
 	<div>
