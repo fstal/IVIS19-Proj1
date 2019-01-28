@@ -1,4 +1,6 @@
-
+body {
+/*  background: lightgrey;
+*/}
 
 div.individual-tooltip { 
     position: absolute;     
@@ -14,11 +16,20 @@ div.individual-tooltip {
 }
 
 div.individual-details {
-    background: lightsteelblue; 
-    border: 2px;    
-    font: 12px sans-serif;    
+/*    background: lightsteelblue; 
+*/    font: 14px sans-serif;  
 }
 
 div.menu select {
   font-size: 1em;
+}
+
+#individuals-list-div {
+    width: 1424px;
+    display: :inline-block;
+}
+
+#individuals-list-svg {
+    display: inline-block;
+
 }

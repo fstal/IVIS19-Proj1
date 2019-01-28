@@ -1,11 +1,25 @@
 
 // Arrays
 var individualsObjArray = [];
+var individualsObjArrayOrigin = [];
 var pickedIndivudals = [];
 
+//Groups
+var grp1 = [];
+var grp2 = [];
+var grp3 = [];
+var grp4 = [];
+var grp5 = [];
+var grp6 = [];
+var grp7 = [];
+var grp8 = [];
+var grp9 = [];
+var grp10 = [];
+
+
 // Outer Dimensions
-var outerWidth = 1800;
-var outerHeight = 500;
+var outerWidth = 920;
+var outerHeight = 300;
 
 //Outer Dimensions individ graph
 var outerWidthInd = 1200;
@@ -23,11 +37,13 @@ var innerHeight = outerHeight - marginTop - marginBottom;
 
 
 // Other vars
-var rMin = 8;
+var rMin = 8; // r is for radius
 var rMax = 25;
 var xCol = "";
 var yCol = "artskill";
 var rCol = "avgskill";
+var activeGroup = 1;
+let transitionDuration = 1750; //in ms
 
 readData();
 
@@ -59,9 +75,11 @@ function readData() {
 				communicationskill : +d.CommunicationSkill,
 				collabskill : +d.CollabSkill,
 				gitskill : +d.GitSkill,
-				avgskill : avgSkill
+				avgskill : avgSkill,
+				selected : false		//relic
 			}
 			individualsObjArray.push(IndividualObject);
+			individualsObjArrayOrigin.push(IndividualObject);
 	  });
 	  //retrieveInterests("Viktor Krum");
 	  render(individualsObjArray);
@@ -77,41 +95,52 @@ console.log(individualsObjArray);
 var svg = d3.select("#individuals-list-div").append("svg")
 		.attr("id", "individuals-list-svg")
 		.attr("width", outerWidth)
-		.attr("height", outerHeight);
+		.attr("height", outerHeight)
+		.attr("position", "absolute");
 
 var g = svg.append("g").attr("transform", "translate(" + marginLeft + "," + marginTop + ")");
 
-var xAxisG = g.append("g").attr("transform", "translate(0," + innerHeight + ")");
+var xAxisG = g.append("g").attr("transform", "translate(0," + innerHeight + ")"); //putting x-axis on bottom of plot
 var yAxisG = g.append("g");
 
 var xIndScale = d3.scaleLinear().range([0, innerWidth]);
 var yIndScale = d3.scaleLinear().domain([0, 10]).range([innerHeight, 0]);
 var rIndScale = d3.scaleLinear().range([rMin, rMax]);
 
-var xAxis = d3.axisBottom(xIndScale);
+var xAxis = d3.axisBottom(xIndScale).tickSize(0).tickFormat("");;
 var yAxis = d3.axisLeft(yIndScale);
 
-// Define the div for the tooltip
-var div = d3.select("body").append("div")	
+
+var divTooltip = d3.select("body").append("div")	 // Define the div for the tooltip
     .attr("class", "individual-tooltip")				
     .style("opacity", 0);
 
-var divIndDetails = d3.select("#selected-individual").append("div")
+var divIndDetails = d3.select("#individuals-list-div").append("div")
 	.attr("class", "individual-details")
 	.attr("id", "individual-details-wrapper");
-
 var divIndDetailsName = d3.select("#individual-details-wrapper").append("div")
 	.attr("class", "individual-details name")
-	.attr("id", "individual-details-name");
+	.attr("id", "individual-details-name")
+	.html("Name:");
 var divIndDetailsAvgSkill = d3.select("#individual-details-wrapper").append("div")
 	.attr("class", "individual-details")
-	.attr("id", "individual-details-avgskill");
+	.attr("id", "individual-details-avgskill")
+	.html("AvgSkill:");
 var divIndDetailsMaster = d3.select("#individual-details-wrapper").append("div")
 	.attr("class", "individual-details")
-	.attr("id", "individual-details-master");
-var divIndDetailsInterests =d3.select("#individual-details-wrapper").append("div")
+	.attr("id", "individual-details-master")
+	.html("Master:");
+var divIndDetailsInterests = d3.select("#individual-details-wrapper").append("div")
 	.attr("class", "individual-details")
-	.attr("id", "individual-details-interests");
+	.attr("id", "individual-details-interests")
+	.html("Interest:");
+var btnIndDetails = d3.select("#individual-details-wrapper").append("button")
+	.attr("class", "individual-details")
+	.attr("id", "individual-details-button")
+	.attr("value", "")
+	.attr("onclick", "addToGroup(this.value, this.groupNum-value)")
+	.attr("groupNum-value", "")
+	.html("Add to group");
 
 // var svgIndidualGraph = d3.select("#individual-details-wrapper").append("svg")
 // 		.attr("id", "individual-graph")
@@ -131,12 +160,15 @@ function render(dataArray) {
 	var circles = g.selectAll("circle").data(dataArray);
 
 	// Enter
-	circles.enter().append("circle")
-		.attr("fill", "grey")
+	circles.enter().append("circle") //just being fancy, wanting the first transition to origin from middle of graph
+		.attr("cx", innerWidth / 2)
+		.attr("cy", innerHeight / 2)
+		.attr("r", 0)
 
 	// Update
 	.merge(circles)
-	    .attr("cx", function(d, i){ return 15 + (30 * i); })
+		.transition().duration(transitionDuration).delay(function(d, i){ return (20 * i); })
+	    .attr("cx", function(d, i){ return 12 + (15 * i); })
 	    .attr("cy", function(d, i){ return yIndScale(d[yCol]); })
 	    .attr("r", function(d){ return rIndScale(d[rCol]); })
 	    .attr("fill", function(d) {
@@ -147,26 +179,34 @@ function render(dataArray) {
 		    }
 		    else {
 		    	return "grey";
-		    } 
+		    }
 		 })
+	    .attr("selected", "false"); //datum??
+	    circles
 	    .on("mouseover", function(d) {
-	    	div.transition()		
-                .duration(200)		
-                .style("opacity", .9);
-            div.html(d.name + "<br/> AvgSkill: "  + d.avgskill)	
+	    	console.log("123")
+	    	divTooltip.transition()		
+                .duration(175)		
+                .style("opacity", .85);
+            divTooltip.html(d.name + "<br/> AvgSkill: "  + d.avgskill)	
                 .style("left", (d3.event.pageX) + "px")		
-                .style("top", (d3.event.pageY - 28) + "px");	
+                .style("top", (d3.event.pageY - 28) + "px");
+            d3.select(this)
+            	.style("stroke", "black")	
             })				
         .on("mouseout", function(d) {		
-            div.transition()		
+            divTooltip.transition()		
                 .duration(500)		
-                .style("opacity", 0);	
+                .style("opacity", 0);
+            d3.select(this)
+            	.style("stroke", "none")		
         })
         .on("click", function(d){
 			divIndDetailsName.html("Name: " + d.name);
 			divIndDetailsAvgSkill.html("Average skill: " + d.avgskill);
 			divIndDetailsMaster.html("Major: " + d.master);
 			divIndDetailsInterests.html("Interests: " + d.interests);
+			btnIndDetails.attr("value", d.name);
 		});
 	// Exit
 	circles.exit().remove();
@@ -225,11 +265,36 @@ function retrieveInterests(name) {
 
 //Should be done more D3-idiomatic but canät be bothered right now
 function selectOption() {
-	var selection = document.getElementById("selectMenu").value;
-	yCol = selection;
-	console.log(yCol);
+	var selection = document.getElementById("selectMenu");
+	var selectionValue = selection.value;
+	var selectionName = selection.options[selection.selectedIndex].text;
+	document.getElementById("individuals-headline").innerHTML = selectionName + " skill";
+	yCol = selectionValue;
 	render(individualsObjArray);
 }
-
-function reRenderPlot() {
+function setGroupNum(groupNum) {
+	btnIndDetails.attr("groupnum-value", groupNum);
+	activeGroup = groupNum;
 }
+
+function addToGroup(name, groupNum) {
+	if (convertToGroup(groupNum).length < 7 && IndividualObject.length > 0) {
+		convertToGroup(groupNum).push("123");
+		//console.log("längden på grupp " + groupNum + "är " convertToGroup(groupNum).length);
+	}
+
+}
+function convertToGroup(num) {
+	if (num === 1) {return grp1}
+	else if (num === 2) {return grp2}
+	else if (num === 3) {return grp3}
+	else if (num === 4) {return grp4}
+	else if (num === 5) {return grp5}
+	else if (num === 6) {return grp6}
+	else if (num === 7) {return grp7}
+	else if (num === 8) {return grp8}
+	else if (num === 9) {return grp9}
+	else if (num === 10) {return grp10}
+	else {return [1,2,3,4,5,6,7,8,9]}
+}
+
