@@ -48,7 +48,7 @@ let transitionDuration = 1750; //in ms
 readData();
 
 function readData() {
-	d3.csv("IVIS19-Proj1/IVIS19-group-data.csv").then(function(data) {
+	d3.csv("IVIS19data.csv").then(function(data) {
 	  data.forEach(function(d) {
 		
 		var avgSkill = Math.round(((+d.InfoVisSkill + +d.StatSkill + +d.MathSkill + +d.ArtSkill + +d.ComputerSkill + +d.ProgrammingSkill
