@@ -45,7 +45,6 @@ var rCol = "avgskill";
 var activeGroup = 1;
 let transitionDuration = 1750; //in ms
 
-readData();
 
 function readData() {
 	d3.csv("IVIS19data.csv").then(function(data) {
@@ -86,7 +85,7 @@ function readData() {
 	  render(individualsObjArray);
 	});
 }
- 
+readData();
 console.log(individualsObjArray);
 
 
