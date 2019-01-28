@@ -53,8 +53,6 @@ function readData() {
 		var avgSkill = Math.round(((+d.InfoVisSkill + +d.StatSkill + +d.MathSkill + +d.ArtSkill + +d.ComputerSkill + +d.ProgrammingSkill
 			+ +d.CompGraphicsSkill + +d.HCISkill + +d.UXSkill + +d.CommunicationSkill + +d.CollabSkill + +d.GitSkill) /12) * 100) / 100;
 
-		//console.log("avgskill for " + d.Name + " is " + avgSkill);
-
 		var IndividualObject = 
 			{
 				name : d.Name,
@@ -81,7 +79,7 @@ function readData() {
 			individualsObjArrayOrigin.push(IndividualObject);
 	  });
 	  //retrieveInterests("Viktor Krum");
-	 	console.log("första")
+	 //console.log("första")
 	  render(individualsObjArray);
 	});
 }
@@ -141,14 +139,9 @@ var btnIndDetails = d3.select("#individual-details-wrapper").append("button")
 	.attr("groupNum-value", "")
 	.html("Add to group");
 
-// var svgIndidualGraph = d3.select("#individual-details-wrapper").append("svg")
-// 		.attr("id", "individual-graph")
-// 		.attr("width", outerWidth)
-// 		.attr("height", outerHeight);
-
-//d3.axisBottom().tickFormat(function(d){ return d.x;});
 
 
+// Render
 function render(dataArray) {
 	
 	rIndScale.domain(d3.extent(dataArray, function (d) {return d.avgskill; }));
@@ -210,48 +203,14 @@ function render(dataArray) {
 	// Exit
 	circles.exit().remove();
 
-// circle = circle.enter().append("circle") // ENTER
-//     .style("fill", "green")
-//   .merge(circle) // ENTER + UPDATE
-//     .style("stroke", "black");
+
 
 }
 
 
-// function generateCircles() {
-// 	console.log("genereateCircles() is run.")
-
-// 	var scale = d3.scaleLinear()
-// 		.domain([1,10])
-// 		.range([100,1]);
-
-// 	var svg = d3.select("#individuals-list-svg")
-// 		.attr("id", "individuals-list-svg")
-// 		.attr("width", 500)
-// 		.attr("height", 500);
-
-// 		//Enter only cares about the number of items in the data array. Does not handle update.
-
-// 	var circles = svg.d3.select("#individuals-list-svg").selectAll("circle")
-// 	    .data(individualsObjArray)
-// 	    .enter().append("circle")
-// 		    .attr("cx", function(d, i){ return 25 + (50 * i); })
-// 		    .attr("cy", function(d, i){ return d.artskill; })
-// 		    .attr("r", 10)
-// 		    .attr("fill", "grey");
-// }
-
-	// var x = d3.scaleLinear()
- //    .domain([d3.min(individualsObjArray, function(d){ return d.artskill; }) / 1.05, 
- //        d3.max(individualsObjArray, function(d){ return d.artskill; }) * 1.05])
- //    .range([1, 10]);
-
-	// var y = d3.scaleLinear()
- //    .domain([d3.min(individualsObjArray, function(d){ return d.height; }) / 1.05,
- //        d3.max(individualsObjArray, function(d){ return d.height; }) * 1.05])
- //    .range([10, 1]);
 	
 
+// Not used, simply retrieves interests
 function retrieveInterests(name) {
 	console.log("asd")
 	individualsObjArray.forEach(function(d) {
@@ -271,18 +230,35 @@ function selectOption() {
 	yCol = selectionValue;
 	render(individualsObjArray);
 }
+
+// Sets active group for graph and also binds it to button (a bit redundant)
 function setGroupNum(groupNum) {
 	btnIndDetails.attr("groupnum-value", groupNum);
 	activeGroup = groupNum;
 }
 
+//Called by addtogroup-button
+//Appends to selected grp-array and removes from overall list
 function addToGroup(name, groupNum) {
-	if (convertToGroup(groupNum).length < 7 && IndividualObject.length > 0) {
-		convertToGroup(groupNum).push("123");
-		//console.log("längden på grupp " + groupNum + "är " convertToGroup(groupNum).length);
+	if (groupNum == 1 && lengthCheck(grp1)) {
+		individualsObjArray.forEach(function(d) {
+			//if d.name === name, grp1.push(d) and remove from individualspbjectarray
+		});
 	}
-
+		// else if .... -> grp10
 }
+
+//Check on group members
+function lengthCheck(group) {
+	if (group.length < 7) {
+		return true
+	}
+	else {
+		return false
+	}
+}
+
+// Simple convert from string to correct array
 function convertToGroup(num) {
 	if (num === 1) {return grp1}
 	else if (num === 2) {return grp2}
@@ -294,6 +270,6 @@ function convertToGroup(num) {
 	else if (num === 8) {return grp8}
 	else if (num === 9) {return grp9}
 	else if (num === 10) {return grp10}
-	else {return [1,2,3,4,5,6,7,8,9]}
+	else {return "123456789"}
 }
 
