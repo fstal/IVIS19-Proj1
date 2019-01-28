@@ -18,7 +18,7 @@ var grp10 = [];
 
 
 // Outer Dimensions
-var outerWidth = 920;
+var outerWidth = 1320;
 var outerHeight = 300;
 
 //Outer Dimensions individ graph
@@ -160,7 +160,7 @@ function render(dataArray) {
 	// Update
 	.merge(circles)
 		.transition().duration(transitionDuration).delay(function(d, i){ return (20 * i); })
-	    .attr("cx", function(d, i){ return 12 + (15 * i); })
+	    .attr("cx", function(d, i){ return 12 + (22 * i); })
 	    .attr("cy", function(d, i){ return yIndScale(d[yCol]); })
 	    .attr("r", function(d){ return rIndScale(d[rCol]); })
 	    .attr("fill", function(d) {
